@@ -757,6 +757,7 @@ defmodule Paddle do
   defp do_call_and_retry(server, request) do
     case {config(:retry_on_connection_closed), GenServer.call(server, request)} do
       {true, {:error, :ldap_closed}} -> do_retry(server, request)
+      {true, {_, {:gen_tcp_error, _}}} -> do_retry(server, request)
       {true, {:gen_tcp_error, _}} -> do_retry(server, request)
       {_, value} -> value
     end
